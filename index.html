@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="StudyOrbit: Plan Smarter. Study Better. A modern education productivity platform with AI-driven tools for students and scholars.">
+    <meta name="keywords" content="study planner, education, productivity, AI assistant, Pomodoro timer">
+    <title>StudyOrbit - Plan Smarter. Study Better.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS Styles */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6a0dad, #1e90ff);
+            --secondary: #9b59b6;
+            --accent: #3498db;
+            --light-bg: #F5F5F5;
+            --dark-bg: #0d0d2b;
+            --dark-bg-alt: #1a1a2e;
+            --text-light: #0F172A;
+            --text-dark: #E5E7EB;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--light-bg);
+            color: var(--text-light);
+            transition: background 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        body.dark {
+            background: var(--dark-bg);
+            color: var(--text-dark);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            margin: 0 0 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .nav h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .nav .user-greeting {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .toggle-mode {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-mode:hover {
+            transform: scale(1.1);
+        }
+
+        .section {
+            display: none;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        body.dark .section {
+            background: var(--dark-bg-alt);
+            color: var(--text-dark);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background: none;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            background: #fafafa;
+            transition: background 0.3s ease;
+        }
+
+        body.dark .task-item {
+            border-color: #333;
+            background: var(--dark-bg-alt);
+        }
+
+        .task-item:hover {
+            background: #f0f0f0;
+        }
+
+        body.dark .task-item:hover {
+            background: #2a2a3e;
+        }
+
+        .task-item.completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 24px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        body.dark .progress-bar {
+            background: #333;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .streak {
+            font-size: 1.5rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .pomodoro-timer {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            color: var(--text-light);
+        }
+
+        body.dark .pomodoro-timer {
+            color: var(--text-dark);
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .container {
+                padding: 1rem;
+            }
+            .section {
+                padding: 1.5rem;
+            }
+            .timer-controls {
+                flex-direction: column;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <h1><i class="fas fa-rocket"></i> StudyOrbit</h1>
+        <div class="user-greeting" id="greeting"></div>
+        <button class="toggle-mode" onclick="toggleMode()">🌙</button>
+    </nav>
+    <div class="container">
+        <!-- Login Section -->
+        <div id="login-section" class="section active">
+            <h2><i class="fas fa-sign-in-alt"></i> Log In</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="btn-primary"><i class="fas fa-arrow-right"></i> Log In</button>
+                <p style="text-align: center; margin-top: 1rem;">Don't have an account? <a href="#" onclick="showSection('signup-section')" style="color: var(--accent);">Sign Up</a></p>
+            </form>
+        </div>
+
+        <!-- Signup Section -->
+        <div id="signup-section" class="section">
+            <h2><i class="fas fa-user-plus"></i> Sign Up</h2>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="signup-firstname">First Name</label>
+                    <input type="text" id="signup-firstname" required placeholder="Enter your first name">
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" required placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <input type="password" id="signup-password" required placeholder="Create a password">
+                </div>
+                <button type="submit" class="btn-primary"><i class="fas fa-check"></i> Sign Up</button>
+                <p style="text-align: center; margin-top: 1rem;">Already have an account? <a href="#" onclick="showSection('login-section')" style="color: var(--accent);">Log In</a></p>
+            </form>
+        </div>
+
+        <!-- Study Planner Section -->
+        <div id="planner-section" class="section">
+            <h2><i class="fas fa-calendar-alt"></i> Study Planner</h2>
+            <div class="form-group">
+                <label for="task-input">Add a New Task</label>
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="task-input" placeholder="e.g., Review Chapter 5">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-time">Estimated Time (minutes)</label>
+                        <input type="number" id="task-time" min="1" placeholder="e.g., 30">
+                    </div>
+                    <div class="form-group">
+                        <label for="priority-select">Priority</label>
+                        <select id="priority-select">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    <button onclick="addTask()" class="btn-primary"><i class="fas fa-plus"></i> Add Task</button>
+                </div>
+            </div>
+            <ul id="task-list" class="task-list"></ul>
+            <h3><i class="fas fa-chart-line"></i> Progress</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p>Current Streak: <span class="streak" id="streak">0</span> days</p>
+            <h3><i class="fas fa-clock"></i> Focus Session (Pomodoro)</h3>
+            <div class="pomodoro-timer" id="timer">150:00</div>
+            <div class="timer-controls">
+                <button onclick="startPomodoro()" class="btn-primary"><i class="fas fa-play"></i> Start Session</button>
+                <button onclick="resetPomodoro()" class="btn-secondary"><i class="fas fa-redo"></i> Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript Functionality
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let currentUser = null;
+        let tasks = [];
+        let streak = 0;
+        let pomodoroTime = 150 * 60; // 150 minutes = 2.5 hours in seconds
+        let timerInterval = null;
+
+        // Toggle Dark/Light Mode
+        function toggleMode() {
+            document.body.classList.toggle('dark');
+            const btn = document.querySelector('.toggle-mode');
+            btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+        }
+
+        // Show Section
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Login Form
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const user = users.find(u => u.email === email && u.password === password);
+            if (user) {
+                currentUser = user;
+                document.getElementById('greeting').textContent = `Hello, ${user.firstname}!`;
+                showSection('planner-section');
+                loadTasks();
+            } else {
+                alert('Invalid credentials. Please try again.');
+            }
+        });
+
+        // Signup Form
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const firstname = document.getElementById('signup-firstname').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            if (users.find(u => u.email === email)) {
+                alert('An account with this email already exists.');
+                return;
+            }
+            users.push({ firstname, email, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Sign up successful! Please log in.');
+            showSection('login-section');
+        });
+
+        // Study Planner Functions
+        function addTask() {
+            const taskInput = document.getElementById('task-input');
+            const taskTime = document.getElementById('task-time');
+            const priority = document.getElementById('priority-select').value;
+            if (taskInput.value.trim() && taskTime.value) {
+                tasks.push({ text: taskInput.value, time: parseInt(taskTime.value), priority, completed: false });
+                taskInput.value = '';
+                taskTime.value = '';
+                renderTasks();
+                updateProgress();
+            } else {
+                alert('Please enter task description and estimated time.');
+            }
+        }
+
+        function renderTasks() {
+            const taskList = document.getElementById('task-list');
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                const li = document.createElement('li');
+                li.className = `task-item ${task.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <div>
+                        <strong>${task.text}</strong> (${task.priority}) - <em>${task.time} min</em>
+                    </div>
+                    <button onclick="toggleTask(${index})" class="btn-secondary"><i class="fas fa-${task.completed ? 'undo' : 'check'}"></i> ${task.completed ? 'Undo' : 'Complete'}</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+
+        function toggleTask(index) {
+            tasks[index].completed = !tasks[index].completed;
+            renderTasks();
+            updateProgress();
+            if (tasks.every(t => t.completed)) {
+                streak++;
+                document.getElementById('streak').textContent = streak;
+            }
+        }
+
+        function updateProgress() {
+            const completed = tasks.filter(t => t.completed).length;
+            const progress = tasks.length ? (completed / tasks.length) * 100 : 0;
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        function loadTasks() {
+            // In a real app, load from backend
+            tasks = JSON.parse(localStorage.getItem(`tasks_${currentUser.email}`)) || [];
+            streak = parseInt(localStorage.getItem(`streak_${currentUser.email}`)) || 0;
+            document.getElementById('streak').textContent = streak;
+            renderTasks();
+            updateProgress();
+        }
+
+        function saveTasks() {
+            localStorage.setItem(`tasks_${currentUser.email}`, JSON.stringify(tasks));
+            localStorage.setItem(`streak_${currentUser.email}`, streak);
+        }
+
+        // Pomodoro Timer
+        function startPomodoro() {
+            if (timerInterval) return;
+            timerInterval = setInterval(() => {
+                pomodoroTime--;
+                const hours = Math.floor(pomodoroTime / 3600);
+                const minutes = Math.floor((pomodoroTime % 3600) / 60);
+                const seconds = pomodoroTime % 60;
+                document.getElementById('timer').textContent = `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                if (pomodoroTime <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Focus session complete! Great job!');
+                    pomodoroTime = 150 * 60;
+                    document.getElementById('timer').textContent = '150:00';
+                }
+            }, 1000);
+        }
+
+        function resetPomodoro() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            pomodoroTime = 150 * 60;
+            document.getElementById('timer').textContent = '150:00';
+        }
+
+        // Save tasks on page unload
+        window.addEventListener('beforeunload', saveTasks);
+    </script>
+</body>
+</html>
